@@ -1,0 +1,25 @@
+#wrapper {
+    width: 500px;
+    margin: 0 auto;
+    margin-top: 40px;
+}
+
+#dropContainer {
+    width: 20em;
+    line-height: 10em;
+    border: 1px dashed gray;
+    text-align: center;
+    color: gray;
+    border-radius: 7px;
+    background-image: url(images/Colored-box-abstract-background-vector.webp);
+}
+
+/* image dropbox image css */
+/* .dropboximg {
+    position: absolute;
+    width: 620px;
+    height: 320px;
+    top: 262px;
+    left: 455px;
+    z-index: -1;
+} */
