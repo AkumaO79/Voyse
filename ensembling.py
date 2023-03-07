@@ -96,6 +96,6 @@ if __name__ == '__main__':
             if i + 1 == index:
                 print(classification_report(ans, eval(args.pred_func)(avg_preds)))
 
-    # Printing overall results
+    # Printing overall result
     for set in sets:
         print("Max ensemble w-accuracies for " + set + " : " + str(max(ensemble_accuracies[set])))
