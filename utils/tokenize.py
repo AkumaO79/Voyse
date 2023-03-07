@@ -34,7 +34,7 @@ def create_dict(key_to_sentence, dataroot, use_glove=True):
     spacy_tool = None
     pretrained_emb = []
     if use_glove:
-        spacy_tool = en_vectors_web_lg.load()
+        spacy_tool = en_core_web_lg.load()
         pretrained_emb.append(spacy_tool('UNK').vector)
 
     for k, v in key_to_sentence.items():
