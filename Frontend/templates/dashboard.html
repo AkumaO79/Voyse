@@ -10,12 +10,14 @@
     <!-- CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-    <link rel="stylesheet" href="sidebar.css">
+    <!-- <link rel="stylesheet" href="templates/sidebar.css"> -->
+    <link rel="stylesheet" href="/static/css/sidebar.css" />
     <title>Dashboard</title>
 </head>
 
 <body>
     <!-- navbar -->
+
     <nav class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top px-5">
         <div class="container-fluid">
             <a class="navbar-brand" href="index.html">Voyse - Speech Analystics</a>
@@ -106,13 +108,55 @@
     <div class="container-fluid" style="margin-top: 2rem;">
         <div class="row">
             <div class="col-2 "></div>
-            <div class="col-5 ">
-                <h2>Transcript</h2>
-                <textarea readonly name="" id="" cols="80" rows="10"></textarea>
-            </div>
-            <div class="col-5">
-                <h2>Summarization</h2>
-                <textarea readonly name="" id="" cols="80" rows="10"></textarea>
+            <div class="col-10">
+                <div class="row mt-4">
+                    <h2>Transcript</h2>
+                    <div id="transcriptRender" style="max-height: 300px; overflow-y: scroll">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    {% for t_column in t_columns %}
+                                    <th>{{ t_column }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for t_row in t_data %}
+                                <tr>
+                                    {% for t_column in t_columns %}
+                                    <td>{{ t_row[t_column] }}</td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <h2>Summarization</h2>
+                    <div id="summarizationRender" style="max-height: 300px;">
+                        <!-- <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    {% for s_column in s_columns %}
+                                    <th>{{ s_column }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for s_row in s_data %}
+                                <tr>
+                                    {% for s_column in s_columns %}
+                                    <td>{{ s_row[s_column] }}</td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table> -->
+                        <textarea readonly style="max-width: 100%; max-height: 300px;" rows="20"
+                            cols="300">{{ content }}</textarea>
+                    </div>
+                </div>
             </div>
         </div>
         <hr>
@@ -133,7 +177,7 @@
                                     <div class="display-5">101s</div>
                                     <div class="card-text">Call Time</div>
                                 </div>
-                                <img src="call-icon.png" class="mx-3" style="height:40px" alt="">
+                                <img src="/static/img/call-icon.png" class="mx-3" style="height:40px" alt="">
                             </div>
                         </div>
                     </div>
@@ -148,7 +192,7 @@
                                     <div class="display-5">10678</div>
                                     <div class="card-text">Words</div>
                                 </div>
-                                <img src="chat.png" class="mx-3" style="height:40px" alt="">
+                                <img src="/static/img/chat.png" class="mx-3" style="height:40px" alt="">
                             </div>
                         </div>
                     </div>
@@ -163,7 +207,7 @@
                                     <div class="display-5">Positive</div>
                                     <div class="card-text">Total Sentiment</div>
                                 </div>
-                                <img src="feelings.png" class="mx-3" style="height:40px" alt="">
+                                <img src="/static/img/feelings.png" class="mx-3" style="height:40px" alt="">
                             </div>
                         </div>
                     </div>
@@ -185,7 +229,7 @@
                         <div class="card-header p-3 pt-2">
                             <div
                                 class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
-                                <img src="Employee.png" alt="" style="height:60px">
+                                <img src="/static/img/Employee.png" alt="" style="height:60px">
                             </div>
                             <div class="text-end pt-1">
                                 <p class="text-sm mb-0 text-capitalize">Overall Sentiment of Employee:</p>
@@ -201,7 +245,7 @@
                         <div class="card-header p-3 pt-2">
                             <div
                                 class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
-                                <img src="customer.png" alt="" style="height:60px">
+                                <img src="/static/img/customer.png" alt="" style="height:60px">
                             </div>
                             <div class="text-end pt-1">
                                 <p class="text-sm mb-0 text-capitalize">Overall Sentiment of Customer:</p>
@@ -217,7 +261,8 @@
                         <div class="card-header p-3 pt-2">
                             <div
                                 class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
-                                <img src="conversation.png" alt="" style="height:60px">
+                                <img src="{{ url_for('static', filename='img/conversation.png') }}" alt=""
+                                    style="height:60px">
                             </div>
                             <div class="text-end pt-1">
                                 <p class="text-sm mb-0 text-capitalize">Overall Sentiment of Conversation:</p>
@@ -229,7 +274,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6"><canvas class="" id="yourlineachart"></canvas></div>
+            <div class="col-6"><!--<canvas class="" id="yourlineachart"></canvas>--><canvas id="myChart"></canvas>
+            </div>
 
         </div>
         <hr>
@@ -254,12 +300,12 @@
 
             const linecanvas = document.getElementById("yourlinechart");
 
-            const labels2 = ["Anger", "Sadness", "Happiness", "Dissatifaction", "Sorrow"];
+            const labels2 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
             const Linedata = {
                 labels: labels2,
                 datasets: [{
-                    label: 'My First Dataset',
-                    data: [65, 59, 80, 81, 56],
+                    label: 'Customer',
+                    data: [0.1, 0.5, 0.6, -0.4, -0.7, -0.9, 0.5, 0.9, 0.3, -0.4, 0.3, -0.4, -0.9, 0.5, 0.9, -0.9, 0.5, 0.9, 0.3, 0.2],
                     fill: false,
                     borderColor: 'rgb(75, 192, 192)',
                     tension: 0.1,
@@ -270,9 +316,11 @@
                 type: 'line',
                 data: Linedata,
                 options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
+                    scales: { y: { min: -1, max: 1, ticks: { stepSize: 0.1 } } },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: (ctx) => 'Step ' + ctx.chart.data.datasets[0].stepped + ' Interpolation',
                         }
                     }
                 }
@@ -286,9 +334,9 @@
 
             const doughnutdata = {
                 labels: [
-                    'Happy',
-                    'Sad',
-                    'Angry'
+                    'Neutral',
+                    'Negative',
+                    'Positive'
                 ],
                 datasets: [{
                     label: 'My First Dataset',
@@ -309,92 +357,146 @@
 
             new Chart(doughnutcanvas, doughnutconfig);
 
+            //OLD SENTIMENT STEPPED LINE CHART
+            // // Stepped line chart code:
+            // const lineacanvas = document.getElementById("yourlineachart");
 
-            // Stepped line chart code:
-            const lineacanvas = document.getElementById("yourlineachart");
+            // const lineadata = {
+            //     labels: ['0min', '10 mins', '20 mins', '30 mins', '40 mins', '50 mins'],
+            //     datasets: [
+            //         {
+            //             label: 'Dataset',
+            //             data: [0, 1, 0, 1, -1],
+            //             borderColor: 'rgb(75, 192, 192)',
+            //             fill: false,
+            //             stepped: true,
+            //         }
+            //     ]
+            // };
 
-            const lineadata = {
-                labels: ['0min', '10 mins', '20 mins', '30 mins', '40 mins', '50 mins'],
-                datasets: [
-                    {
-                        label: 'Dataset',
-                        data: [0, 1, 0, 1, -1],
-                        borderColor: 'rgb(75, 192, 192)',
-                        fill: false,
-                        stepped: true,
-                    }
+            // const lineaconfig = {
+            //     type: 'line',
+            //     data: lineadata,
+            //     options: {
+            //         responsive: true,
+            //         interaction: {
+            //             intersect: false,
+            //             axis: 'x'
+            //         },
+            //         scales: { y: { min: -1, max: 1, ticks: { stepSize: 1 } } },
+            //         plugins: {
+            //             title: {
+            //                 display: true,
+            //                 text: (ctx) => 'Step ' + ctx.chart.data.datasets[0].stepped + ' Interpolation',
+            //             }
+            //         }
+            //     }
+            // };
+
+            // const actions = [
+            //     {
+            //         name: 'Step: false (default)',
+            //         handler: (chart) => {
+            //             chart.data.datasets.forEach(dataset => {
+            //                 dataset.stepped = false;
+            //             });
+            //             chart.update();
+            //         }
+            //     },
+            //     {
+            //         name: 'Step: true',
+            //         handler: (chart) => {
+            //             chart.data.datasets.forEach(dataset => {
+            //                 dataset.stepped = true;
+            //             });
+            //             chart.update();
+            //         }
+            //     },
+            //     {
+            //         name: 'Step: before',
+            //         handler: (chart) => {
+            //             chart.data.datasets.forEach(dataset => {
+            //                 dataset.stepped = 'before';
+            //             });
+            //             chart.update();
+            //         }
+            //     },
+            //     {
+            //         name: 'Step: after',
+            //         handler: (chart) => {
+            //             chart.data.datasets.forEach(dataset => {
+            //                 dataset.stepped = 'after';
+            //             });
+            //             chart.update();
+            //         }
+            //     },
+            //     {
+            //         name: 'Step: middle',
+            //         handler: (chart) => {
+            //             chart.data.datasets.forEach(dataset => {
+            //                 dataset.stepped = 'middle';
+            //             });
+            //             chart.update();
+            //         }
+            //     }
+            // ];
+
+            // new Chart(lineacanvas, lineaconfig);
+
+            // Get the canvas element
+            var ctx = document.getElementById('myChart').getContext('2d');
+
+            // Define the chart data
+            var data = {
+                labels: ['Happy', 'Confused', 'Surprised', 'Sad', 'Disgusted', 'Angry'],
+                datasets: [{
+                    label: 'Emotion w.r.t. entire dataset',
+                    data: [40, 5, 10, 30, 20, 10],
+                    backgroundColor: 'rgba(138, 25, 186, 0.2)',
+                    borderColor: 'rgba(117, 8, 164, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y-axis-1'
+                },
+                    // {
+                    //     label: 'My Second Dataset',
+                    //     data: [],
+                    //     backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    //     borderColor: 'rgba(255, 99, 132, 1)',
+                    //     borderWidth: 1,
+                    //     yAxisID: 'y-axis-2'
+                    // }
                 ]
             };
 
-            const lineaconfig = {
-                type: 'line',
-                data: lineadata,
-                options: {
-                    responsive: true,
-                    interaction: {
-                        intersect: false,
-                        axis: 'x'
-                    },
-                    scales: { y: { min: -1, max: 1, ticks: { stepSize: 1 } } },
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: (ctx) => 'Step ' + ctx.chart.data.datasets[0].stepped + ' Interpolation',
-                        }
-                    }
+            // Define the chart options
+            var options = {
+                responsive: true,
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'My Chart'
+                },
+                scales: {
+                    yAxes: [{
+                        id: 'y-axis-1',
+                        type: 'linear',
+                        position: 'left',
+                    }, {
+                        id: 'y-axis-2',
+                        type: 'linear',
+                        position: 'right',
+                    }]
                 }
             };
 
-            const actions = [
-                {
-                    name: 'Step: false (default)',
-                    handler: (chart) => {
-                        chart.data.datasets.forEach(dataset => {
-                            dataset.stepped = false;
-                        });
-                        chart.update();
-                    }
-                },
-                {
-                    name: 'Step: true',
-                    handler: (chart) => {
-                        chart.data.datasets.forEach(dataset => {
-                            dataset.stepped = true;
-                        });
-                        chart.update();
-                    }
-                },
-                {
-                    name: 'Step: before',
-                    handler: (chart) => {
-                        chart.data.datasets.forEach(dataset => {
-                            dataset.stepped = 'before';
-                        });
-                        chart.update();
-                    }
-                },
-                {
-                    name: 'Step: after',
-                    handler: (chart) => {
-                        chart.data.datasets.forEach(dataset => {
-                            dataset.stepped = 'after';
-                        });
-                        chart.update();
-                    }
-                },
-                {
-                    name: 'Step: middle',
-                    handler: (chart) => {
-                        chart.data.datasets.forEach(dataset => {
-                            dataset.stepped = 'middle';
-                        });
-                        chart.update();
-                    }
-                }
-            ];
-
-            new Chart(lineacanvas, lineaconfig);
-
+            // Create the chart
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: data,
+                options: options
+            });
 
 
             // new chart with both vustomer and client sentiment display
