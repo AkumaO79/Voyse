@@ -97,12 +97,19 @@
             <div class="col-2"></div>
             <div class="col-10 text-center"><div class="dropdown">
                 <button class="btn btn-lg btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Dropdown button
+                  Filter User
                 </button>
                 <ul class="dropdown-menu dropdown-menu-dark">
 
-                    {% for index in chartsData.keys() %}
-                        <li><a class="dropdown-item" href="#">{{ index }}</a></li>
+                    {% for index in chartsData.values() %}
+                        <li>
+                            <!-- '{{ index }}' -->
+                            <a 
+                            class="dropdown-item" 
+                            onclick="changeData({{ index }})">
+                                {{ index.name }}
+                            </a>
+                        </li>
                     {% endfor %}
 
                 </ul>
@@ -310,14 +317,31 @@
         <!-- JavaScript Bundle with Popper -->
         <script>
 
+            // chartsData.Soham.yourlinechart.data 
+
+            let lineChart;
+            let doughnutChart;
+            let barChart;
+
+            
+            function changeData(a) {
+                var context = a;
+                // context = a;
+                // console.log(context)
+                
+                // if (lineChart) {    lineChart.clear();  }
+                // if (barChart) {    barChart.clear();  }
+                // if (doughnutChart) {    doughnutChart.clear();  }  
+                        
+                
             const linecanvas = document.getElementById("yourlinechart");
 
-            const labels2 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+            const labels2 = context.yourlinechart.lables;
             const Linedata = {
                 labels: labels2,
                 datasets: [{
                     label: 'Customer',
-                    data: [0.1, 0.5, 0.6, -0.4, -0.7, -0.9, 0.5, 0.9, 0.3, -0.4, 0.3, -0.4, -0.9, 0.5, 0.9, -0.9, 0.5, 0.9, 0.3, 0.2],
+                    data: context.yourlinechart.data,
                     fill: false,
                     borderColor: 'rgb(75, 192, 192)',
                     tension: 0.1,
@@ -338,7 +362,16 @@
                 }
             };
 
-            new Chart(linecanvas, lineconfig);
+            
+            
+            if (lineChart) {
+                lineChart.destroy();
+                lineChart = new Chart(linecanvas, lineconfig);
+              } else {
+                lineChart = new Chart(linecanvas, lineconfig);
+              }
+            
+            
 
             // line graph ends
 
@@ -352,7 +385,7 @@
                 ],
                 datasets: [{
                     label: 'My First Dataset',
-                    data: [300, 50, 100],
+                    data: context.yourdoughnutchart.data,
                     backgroundColor: [
                         '#6610f2',
                         'rgb(75, 192, 192)',
@@ -367,7 +400,12 @@
                 data: doughnutdata,
             };
 
-            new Chart(doughnutcanvas, doughnutconfig);
+            if (doughnutChart) {
+                doughnutChart.destroy();
+                doughnutChart = new Chart(doughnutcanvas, doughnutconfig);
+              } else {
+                doughnutChart = new Chart(doughnutcanvas, doughnutconfig);
+              }
 
             //OLD SENTIMENT STEPPED LINE CHART
             // // Stepped line chart code:
@@ -456,14 +494,14 @@
             // new Chart(lineacanvas, lineaconfig);
 
             // Get the canvas element
-            var ctx = document.getElementById('myChart').getContext('2d');
+            var barcanvas = document.getElementById('myChart').getContext('2d');
 
             // Define the chart data
             var data = {
                 labels: ['Happy', 'Confused', 'Surprised', 'Sad', 'Disgusted', 'Angry'],
                 datasets: [{
                     label: 'Emotion w.r.t. entire dataset',
-                    data: [40, 5, 10, 30, 20, 10],
+                    data: context.myChart.data,
                     backgroundColor: 'rgba(138, 25, 186, 0.2)',
                     borderColor: 'rgba(117, 8, 164, 1)',
                     borderWidth: 1,
@@ -503,12 +541,22 @@
                 }
             };
 
-            // Create the chart
-            var myChart = new Chart(ctx, {
-                type: 'bar',
-                data: data,
-                options: options
-            });
+            if (barChart) {
+                barChart.destroy();
+                barChart = new Chart(barcanvas, {
+                    type: 'bar',
+                    data: data,
+                    options: options
+                });
+              } else {
+                barChart = new Chart(barcanvas, {
+                    type: 'bar',
+                    data: data,
+                    options: options
+                });
+              }
+
+            
 
 
             // new chart with both vustomer and client sentiment display
@@ -590,7 +638,8 @@
             // ];
 
             // new Chart(bothcanvas, bothconfig);
-
+        
+        }
 
 
 
@@ -600,10 +649,6 @@
             crossorigin="anonymous"></script>
 
         <script src="https://www.chartjs.org/samples/2.9.4/utils.js"></script>
-
-        <script>
-            console.log('{{ chartsData.Soham.yourlinechart.lables }}');
-        </script>
 
 </body>
 
