@@ -23,12 +23,18 @@
             enctype="multipart/form-data"
           >
             <div class="input-group mb-3">
+              <label for="transcript" class="form-label me-3">CSV File</label>
               <input
                 type="file"
                 class="form-control"
                 name="transcript"
                 id="transcript"
               />
+            </div>
+            <div class="input-group mb-3">
+              <label for="summarization" class="form-label me-3"
+                >TXT File</label
+              >
               <input
                 type="file"
                 class="form-control"
@@ -36,6 +42,17 @@
                 id="summarization"
               />
             </div>
+
+            <div class="input-group mb-3">
+              <label for="arrayData" class="form-label me-3">JSON File</label>
+              <input
+                type="file"
+                class="form-control"
+                name="arrayData"
+                id="arrayData"
+              />
+            </div>
+
             <button type="submit" class="btn btn-lg btn-primary">Submit</button>
           </form>
           <div class="bg-white mt-3 p-5">This is all static data</div>
